@@ -12,25 +12,13 @@
 
 <style>
 body { margin: 0; padding: 0; }
-#map { position: absolute; top: 0; bottom: 0; left: 0; right: 320px; }
-#sidebar { position: absolute; top: 0; right: 0; bottom: 0; width: 300px; padding: 10px; font: 14px/1.3 "Helvetica Neue", Arial, sans-serif; overflow-y: auto; }
-a, a:visited { color: #346db0; }
+#map { position: absolute; width: 100%; height: 100%; }
+#canvas { position: absolute; top: 10px; right: 10px; }
 </style>
 </head>
 <body>
-
-<div id='map'></div>
-<div id="sidebar">
-    <canvas id='canvas'></canvas>
-    <p>A <strong>visualization of road orientations</strong> for the current map view. Explore the map to see the chart for your city!</p>
-    <p>Divides 360&deg; into 64 bins and accumulates lengths of road segments with corresponding orientations, then plots the distribution as a polar chart. Two-way roads are counted for both directions.
-
-    <p>Built by <a href="https://twitter.com/mourner">Vladimir Agafonkin</a>. Inspired by the works of <a href="http://vizual-statistix.tumblr.com/post/80468941142/unlike-like-emperor-kuzco-i-was-actually-born">Seth Kadish</a> and <a href="http://geoffboeing.com/2018/07/comparing-city-street-orientations/">Geoff Boeing</a>.</p>
-
-    <p><a href="#">Source code on GitHub</a></p>
-</div>
-
+<div id="map"></div>
+<canvas id="canvas"></canvas>
 <script src="index.js"></script>
-
 </body>
 </html>

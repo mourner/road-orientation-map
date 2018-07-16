@@ -7,8 +7,11 @@ var map = new mapboxgl.Map({
     zoom: 12,
     hash: true
 });
+
 var h = 300;
 var r = h / 2;
+var numBins = 64;
+
 var canvas = document.getElementById('canvas');
 var ctx = canvas.getContext('2d');
 
@@ -20,15 +23,13 @@ if (window.devicePixelRatio > 1) {
     ctx.scale(2, 2);
 }
 
-var numBins = 64;
-
 function updateOrientations() {
     ctx.clearRect(0, 0, h, h);
 
-    ctx.strokeStyle = '#ccc';
+    ctx.fillStyle = 'rgba(255,255,255,0.8)';
     ctx.beginPath();
     ctx.arc(r, r, r, 0, 2 * Math.PI, false);
-    ctx.stroke();
+    ctx.fill();
 
     var features = map.queryRenderedFeatures({layers: ['road']});
     if (features.length === 0) return;
