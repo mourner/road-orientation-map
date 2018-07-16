@@ -81,9 +81,9 @@ function analyzeLine(bins, ruler, line, isTwoWay) {
 
 function interpolateSinebow(t) {
     t = 0.5 - t;
-    var r = 250 * Math.pow(Math.sin(Math.PI * (t + 0 / 3)), 2);
-    var g = 250 * Math.pow(Math.sin(Math.PI * (t + 1 / 3)), 2);
-    var b = 250 * Math.pow(Math.sin(Math.PI * (t + 2 / 3)), 2);
+    var r = Math.floor(250 * Math.pow(Math.sin(Math.PI * (t + 0 / 3)), 2));
+    var g = Math.floor(250 * Math.pow(Math.sin(Math.PI * (t + 1 / 3)), 2));
+    var b = Math.floor(250 * Math.pow(Math.sin(Math.PI * (t + 2 / 3)), 2));
     return 'rgb(' + r + ',' + g + ',' + b + ')';
 }
 
