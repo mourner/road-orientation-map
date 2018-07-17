@@ -10,8 +10,8 @@ var map = new mapboxgl.Map({
     hash: true
 });
 
-// add a search field
 map.addControl(new MapboxGeocoder({accessToken: mapboxgl.accessToken}), 'bottom-right');
+map.addControl(new mapboxgl.NavigationControl(), 'bottom-right');
 
 var h = 300; // size of the chart canvas
 var r = h / 2; // radius of the polar histogram
