@@ -31,10 +31,24 @@ if (window.devicePixelRatio > 1) {
 function updateOrientations() {
     ctx.clearRect(0, 0, h, h);
 
+    var bearing = map.getBearing();
+
+    ctx.save();
+    ctx.translate(r, r);
+    ctx.rotate(-bearing * Math.PI / 180);
+
     ctx.fillStyle = 'rgba(255,255,255,0.8)';
     ctx.beginPath();
-    ctx.arc(r, r, r, 0, 2 * Math.PI, false);
+    ctx.arc(0, 0, r, 0, 2 * Math.PI, false);
     ctx.fill();
+
+    ctx.strokeStyle = 'rgba(0,0,0,0.15)';
+    ctx.beginPath();
+    ctx.moveTo(-r, 0);
+    ctx.lineTo(r, 0);
+    ctx.moveTo(0, -r);
+    ctx.lineTo(0, r);
+    ctx.stroke();
 
     var features = map.queryRenderedFeatures({layers: ['road']});
     if (features.length === 0) return;
@@ -42,7 +56,6 @@ function updateOrientations() {
     var ruler = cheapRuler(map.getCenter().lat);
     var bounds = map.getBounds();
     var bbox = [bounds.getWest(), bounds.getSouth(), bounds.getEast(), bounds.getNorth()];
-    var bearing = map.getBearing();
     var bins = new Float64Array(numBins);
 
     for (var i = 0; i < features.length; i++) {
@@ -64,15 +77,17 @@ function updateOrientations() {
     var binMax = Math.max.apply(null, bins);
 
     for (i = 0; i < numBins; i++) {
-        var a0 = ((i - 0.5) * 360 / numBins - 90 - bearing) * Math.PI / 180;
-        var a1 = ((i + 0.5) * 360 / numBins - 90 - bearing) * Math.PI / 180;
+        var a0 = ((i - 0.5) * 360 / numBins - 90) * Math.PI / 180;
+        var a1 = ((i + 0.5) * 360 / numBins - 90) * Math.PI / 180;
         ctx.fillStyle = interpolateSinebow((2 * i % numBins) / numBins);
         ctx.beginPath();
-        ctx.moveTo(r, r);
-        ctx.arc(r, r, r * Math.sqrt(bins[i] / binMax), a0, a1, false);
+        ctx.moveTo(0, 0);
+        ctx.arc(0, 0, r * Math.sqrt(bins[i] / binMax), a0, a1, false);
         ctx.closePath();
         ctx.fill();
     }
+
+    ctx.restore();
 }
 
 function analyzeLine(bins, ruler, line, isTwoWay) {
