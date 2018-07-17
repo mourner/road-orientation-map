@@ -87,7 +87,7 @@ function interpolateSinebow(t) {
     return 'rgb(' + r + ',' + g + ',' + b + ')';
 }
 
-map.on('load', () => {
+map.on('load', function () {
     updateOrientations();
     map.on('moveend', updateOrientations);
 });
