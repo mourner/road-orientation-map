@@ -11,7 +11,7 @@ var map = new mapboxgl.Map({
 });
 
 map.addControl(new MapboxGeocoder({accessToken: mapboxgl.accessToken}), 'bottom-right');
-map.addControl(new mapboxgl.NavigationControl(), 'bottom-right');
+map.addControl(new mapboxgl.NavigationControl(), 'top-left');
 
 var h = 300; // size of the chart canvas
 var r = h / 2; // radius of the polar histogram
