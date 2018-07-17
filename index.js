@@ -1,5 +1,7 @@
+// my personal token - please generate your own at https://www.mapbox.com/studio/
 mapboxgl.accessToken = 'pk.eyJ1IjoibW91cm5lciIsImEiOiJWWnRiWG1VIn0.j6eccFHpE3Q04XPLI7JxbA';
 
+// initialize a Mapbox map with the Basic style, centered in New York
 var map = new mapboxgl.Map({
     container: 'map',
     style: 'mapbox://styles/mapbox/cjf4m44iw0uza2spb3q0a7s41',
@@ -8,9 +10,9 @@ var map = new mapboxgl.Map({
     hash: true
 });
 
-var h = 300;
-var r = h / 2;
-var numBins = 64;
+var h = 300; // size of the chart canvas
+var r = h / 2; // radius of the polar histogram
+var numBins = 64; // number of orientation bins spread around 360 deg.
 
 var canvas = document.getElementById('canvas');
 var ctx = canvas.getContext('2d');
@@ -43,16 +45,20 @@ function updateOrientations() {
     for (var i = 0; i < features.length; i++) {
         var geom = features[i].geometry;
         var lines = geom.type === 'LineString' ? [geom.coordinates] : geom.coordinates;
+
+        // clip lines to screen bbox for more exact analysis
         var clippedLines = [];
         for (var j = 0; j < lines.length; j++) {
             clippedLines.push.apply(clippedLines, lineclip(lines[j], bbox));
         }
+
+        // update orientation bins from each clipped line
         for (j = 0; j < clippedLines.length; j++) {
             analyzeLine(bins, ruler, clippedLines[j], features[i].properties.oneway !== 'true');
         }
     }
 
-    var max = Math.max.apply(null, bins);
+    var binMax = Math.max.apply(null, bins);
 
     for (i = 0; i < numBins; i++) {
         var a0 = ((i - 0.5) * 360 / numBins - 90 - bearing) * Math.PI / 180;
@@ -60,7 +66,7 @@ function updateOrientations() {
         ctx.fillStyle = interpolateSinebow((2 * i % numBins) / numBins);
         ctx.beginPath();
         ctx.moveTo(r, r);
-        ctx.arc(r, r, r * Math.sqrt(bins[i] / max), a0, a1, false);
+        ctx.arc(r, r, r * Math.sqrt(bins[i] / binMax), a0, a1, false);
         ctx.closePath();
         ctx.fill();
     }
@@ -68,17 +74,18 @@ function updateOrientations() {
 
 function analyzeLine(bins, ruler, line, isTwoWay) {
     for (var i = 0; i < line.length - 1; i++) {
-        var b = ruler.bearing(line[i], line[i + 1]);
-        var d = ruler.distance(line[i], line[i + 1]);
+        var bearing = ruler.bearing(line[i], line[i + 1]);
+        var distance = ruler.distance(line[i], line[i + 1]);
 
-        var k = Math.round((b + 360) * numBins / 360) % numBins;
-        var k2 = Math.round((b + 180) * numBins / 360) % numBins;
+        var k0 = Math.round((bearing + 360) * numBins / 360) % numBins; // main bin
+        var k1 = Math.round((bearing + 180) * numBins / 360) % numBins; // opposite bin
 
-        bins[k] += d;
-        if (isTwoWay) bins[k2] += d;
+        bins[k0] += distance;
+        if (isTwoWay) bins[k1] += distance;
     }
 }
 
+// rainbow colors for the chart http://basecase.org/env/on-rainbows
 function interpolateSinebow(t) {
     t = 0.5 - t;
     var r = Math.floor(250 * Math.pow(Math.sin(Math.PI * (t + 0 / 3)), 2));
@@ -89,5 +96,7 @@ function interpolateSinebow(t) {
 
 map.on('load', function () {
     updateOrientations();
+    // update the chart on moveend; we could do that on move,
+    // but this is slow on some zoom levels due to a huge amount of roads
     map.on('moveend', updateOrientations);
 });
