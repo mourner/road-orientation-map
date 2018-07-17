@@ -51,7 +51,10 @@ function updateOrientations() {
     ctx.stroke();
 
     var features = map.queryRenderedFeatures({layers: ['road']});
-    if (features.length === 0) return;
+    if (features.length === 0) {
+        ctx.restore();
+        return;
+    }
 
     var ruler = cheapRuler(map.getCenter().lat);
     var bounds = map.getBounds();
