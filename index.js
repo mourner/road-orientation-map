@@ -1,5 +1,5 @@
 // my personal token - please generate your own at https://www.mapbox.com/studio/
-mapboxgl.accessToken = 'pk.eyJ1IjoibW91cm5lciIsImEiOiJjbG1qZjhnOGswM3QzMmtvYmc5dDJjNW94In0.0iQi-qVJJQ6bZCqPyrTp2w';
+mapboxgl.accessToken = 'pk.eyJ1IjoibW91cm5lciIsImEiOiJjbG83ZDF0ZGgwNTJ1MmtsajF1ZDN0c3ZvIn0.56k4reJ2cZAGNVklIGCXnQ';
 
 // initialize a Mapbox map with the Basic style, centered in New York
 var map = new mapboxgl.Map({
